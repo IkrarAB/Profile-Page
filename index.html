@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ikrar Anugrah Bastary — Full-Stack Developer</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <style>
+    body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 antialiased">
+  <!-- Navbar -->
+  <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-50/85 dark:bg-slate-950/85 border-b border-slate-200 dark:border-slate-800">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2 font-bold text-lg tracking-tight text-slate-900 dark:text-white">
+        <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm font-extrabold">IA</span>
+        <span>Ikrar AB</span>
+      </a>
+
+      <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+        <a href="#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</a>
+        <a href="#skills" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Skills</a>
+        <a href="#projects" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Projects</a>
+        <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</a>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
+          class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+          <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+        </button>
+        <button id="mobile-menu-btn" type="button" aria-label="Toggle menu"
+          class="sm:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200">
+          <i data-lucide="menu" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav -->
+    <div id="mobile-menu" class="hidden sm:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-2 text-sm font-medium">
+      <a href="#about" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">About</a>
+      <a href="#skills" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Skills</a>
+      <a href="#projects" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Projects</a>
+      <a href="#contact" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Contact</a>
+    </div>
+  </header>
+
+  <main id="top" class="max-w-5xl mx-auto px-4 sm:px-6">
+    <!-- Hero -->
+    <section class="py-16 sm:py-24 flex flex-col items-start gap-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        Bandung, Indonesia · Full-Stack Developer
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight max-w-3xl">
+        Hey, I'm <span class="text-indigo-600 dark:text-indigo-400">Ikrar Anugrah Bastary</span>.
+      </h1>
+
+      <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
+        I build reliable full-stack web apps, clean RESTful APIs, and scalable relational database systems. Focused on practical, maintainable code that gets the job done.
+      </p>
+
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <a href="#projects"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-colors">
+          <i data-lucide="folder-code" class="w-4 h-4"></i>
+          View Projects
+        </a>
+        <a href="https://github.com/IkrarAB" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          GitHub
+        </a>
+        <a href="https://www.linkedin.com/in/ikrarab/" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
+          <i data-lucide="linkedin" class="w-4 h-4"></i>
+          LinkedIn
+        </a>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="py-12 border-t border-slate-200 dark:border-slate-800">
+      <div class="grid md:grid-cols-3 gap-8 items-start">
+        <div class="md:col-span-2 space-y-4">
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">About Me</h2>
+          <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+            I'm an Informatics Engineering graduate from Universitas Komputer Indonesia (UNIKOM) with over 2 years of hands-on experience developing and maintaining full-stack web applications and backend services.
+          </p>
+          <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+            Most of my day-to-day work revolves around PHP (Laravel, CodeIgniter), JavaScript, RESTful APIs, and relational databases like MySQL and PostgreSQL. When I'm away from work code, I enjoy tinkering with self-hosted Linux game servers, exploring new tech peripherals, playing PC games, and hanging out around Bandung.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Experience</div>
+            <div class="mt-1 font-bold text-slate-900 dark:text-white">2+ Years Full-Stack</div>
+            <div class="text-sm text-slate-500 dark:text-slate-400">Web apps, APIs & billing systems</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Education</div>
+            <div class="mt-1 font-bold text-slate-900 dark:text-white">B.Sc. Informatics (S.Kom)</div>
+            <div class="text-sm text-slate-500 dark:text-slate-400">Universitas Komputer Indonesia</div>
+          </div>
+          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Off the Clock</div>
+            <div class="mt-1 font-bold text-slate-900 dark:text-white">Gaming & Linux Servers</div>
+            <div class="text-sm text-slate-500 dark:text-slate-400">Docker, mechanical keyboards & coffee</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="py-12 border-t border-slate-200 dark:border-slate-800">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Tech Stack & Skills</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Filter by category to explore the tools I work with.</p>
+        </div>
+        <div id="skill-filters" class="flex flex-wrap gap-2">
+          <button type="button" data-filter="all" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors">All</button>
+          <button type="button" data-filter="backend" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Backend</button>
+          <button type="button" data-filter="frontend" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Frontend</button>
+          <button type="button" data-filter="database" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Database</button>
+          <button type="button" data-filter="devops" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Tools & DevOps</button>
+        </div>
+      </div>
+
+      <div id="skills-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="py-12 border-t border-slate-200 dark:border-slate-800">
+      <div class="mb-6">
+        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Highlighted Work & Projects</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">A snapshot of systems and side projects I've built and contributed to.</p>
+      </div>
+
+      <div id="projects-grid" class="grid sm:grid-cols-2 gap-5"></div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="py-14 border-t border-slate-200 dark:border-slate-800">
+      <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+        <div class="space-y-2 max-w-lg">
+          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Let's connect</h2>
+          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
+            Open to interesting web development projects, backend collaborations, or just chatting about tech and games.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <button id="copy-email-btn" type="button"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-colors">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span id="copy-email-label">Copy Email</span>
+          </button>
+          <a href="mailto:ikraranugrah26@gmail.com"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
+            <i data-lucide="mail" class="w-4 h-4"></i>
+            Send Email
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 py-8 mt-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+      <p>&copy; 2026 Ikrar Anugrah Bastary. Built with HTML &amp; Tailwind CSS.</p>
+      <a href="#top" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+        Back to top <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+      </a>
+    </div>
+  </footer>
+
+  <!-- Project Detail Modal -->
+  <div id="project-modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <span id="modal-tag" class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400"></span>
+          <h3 id="modal-title" class="text-xl font-bold text-slate-900 dark:text-white mt-1"></h3>
+        </div>
+        <button id="close-modal-btn" type="button" aria-label="Close modal"
+          class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <p id="modal-desc" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"></p>
+      <div>
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Key Highlights</div>
+        <ul id="modal-highlights" class="space-y-1.5 text-sm text-slate-700 dark:text-slate-300 list-disc pl-5"></ul>
+      </div>
+      <div id="modal-stack" class="flex flex-wrap gap-2 pt-2"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-16 opacity-0 pointer-events-none transition-all duration-200 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium shadow-lg">
+    Copied ikraranugrah26@gmail.com to clipboard
+  </div>
+
+  <script>
+    const SKILLS = [
+      { name: 'Laravel', category: 'backend', level: 'Primary' },
+      { name: 'CodeIgniter 4', category: 'backend', level: 'Experienced' },
+      { name: 'PHP', category: 'backend', level: 'Primary' },
+      { name: 'RESTful APIs', category: 'backend', level: 'Primary' },
+      { name: 'Java', category: 'backend', level: 'Working' },
+      { name: 'JavaScript', category: 'frontend', level: 'Primary' },
+      { name: 'Vue.js', category: 'frontend', level: 'Experienced' },
+      { name: 'HTML5 & CSS3', category: 'frontend', level: 'Primary' },
+      { name: 'Tailwind CSS', category: 'frontend', level: 'Experienced' },
+      { name: 'MySQL', category: 'database', level: 'Primary' },
+      { name: 'PostgreSQL', category: 'database', level: 'Experienced' },
+      { name: 'Oracle SQL', category: 'database', level: 'Working' },
+      { name: 'Git & GitHub', category: 'devops', level: 'Primary' },
+      { name: 'GitLab CI/CD', category: 'devops', level: 'Experienced' },
+      { name: 'Docker & Linux', category: 'devops', level: 'Experienced' },
+      { name: 'Postman', category: 'devops', level: 'Primary' },
+    ];
+
+    const PROJECTS = [
+      {
+        id: 'billing-systems',
+        tag: 'Enterprise Backend',
+        title: 'Billing & Payment Integration Systems',
+        summary: 'Backend services, virtual account workflows, and CI/CD pipelines for large-scale enterprise billing platforms.',
+        highlights: [
+          'Built and maintained transactional billing modules and Virtual Account reconciliation flows.',
+          'Collaborated across design reviews and backend services to align UI specs with API payloads.',
+          'Monitored automated build pipelines and resolved deployment issues across staging and production.'
+        ],
+        stack: ['PHP', 'Laravel', 'REST API', 'GitLab CI/CD', 'SQL']
+      },
+      {
+        id: 'internal-web-apps',
+        tag: 'Full-Stack Web',
+        title: 'Internal Web Modules & API Suite',
+        summary: 'Custom internal web modules and REST APIs built to streamline operations and reporting.',
+        highlights: [
+          'Developed full-stack features using Laravel, MySQL, and modern JavaScript.',
+          'Created clean RESTful API endpoints for internal system-to-system integrations.',
+          'Delivered iterative user-requested enhancements while maintaining clean, readable code.'
+        ],
+        stack: ['Laravel', 'MySQL', 'JavaScript', 'Postman', 'Git']
+      },
+      {
+        id: 'db-migration',
+        tag: 'Database Engineering',
+        title: 'Relational Database Schema & Procedure Migration',
+        summary: 'Cross-engine database migration work porting legacy stored procedures and schemas to PostgreSQL.',
+        highlights: [
+          'Converted Oracle PL/SQL stored procedures and triggers to PostgreSQL PL/pgSQL.',
+          'Validated data integrity and optimized query execution across migrated tables.',
+          'Documented schema mappings and migration steps for repeatable deployments.'
+        ],
+        stack: ['PostgreSQL', 'Oracle SQL', 'PL/pgSQL', 'DBeaver']
+      },
+      {
+        id: 'game-servers',
+        tag: 'Self-Hosted Infrastructure',
+        title: 'Containerized Linux Game Server Stack',
+        summary: 'Personal side project managing dedicated game servers with Docker containers and automated panels.',
+        highlights: [
+          'Deployed and tuned containerized dedicated servers on Linux.',
+          'Configured networking, backups, and log inspection utilities for smooth uptime.',
+          'Automated routine maintenance tasks with lightweight Bash scripts.'
+        ],
+        stack: ['Linux', 'Docker', 'Bash', 'Networking']
+      }
+    ];
+
+    // Theme initialization
+    const root = document.documentElement;
+    function applyTheme(dark) {
+      root.classList.toggle('dark', dark);
+      try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+    }
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        applyTheme(true);
+      }
+    } catch (e) {}
+
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      applyTheme(!root.classList.contains('dark'));
+    });
+
+    // Mobile menu
+    const mobileMenu = document.getElementById('mobile-menu');
+    document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.mobile-nav-link').forEach((link) => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // Skills rendering & filter
+    let activeSkillFilter = 'all';
+    const skillsGrid = document.getElementById('skills-grid');
+    function renderSkills() {
+      const list = activeSkillFilter === 'all'
+        ? SKILLS
+        : SKILLS.filter((s) => s.category === activeSkillFilter);
+      skillsGrid.innerHTML = list.map((skill) => `
+        <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
+          <span class="font-medium text-sm text-slate-800 dark:text-slate-100">${skill.name}</span>
+          <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${skill.level}</span>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('skill-filters').addEventListener('click', (e) => {
+      const btn = e.target.closest('.skill-filter-btn');
+      if (!btn) return;
+      activeSkillFilter = btn.dataset.filter;
+      document.querySelectorAll('.skill-filter-btn').forEach((b) => {
+        const isActive = b.dataset.filter === activeSkillFilter;
+        b.className = isActive
+          ? 'skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors'
+          : 'skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors';
+      });
+      renderSkills();
+    });
+
+    // Projects rendering & modal
+    const projectsGrid = document.getElementById('projects-grid');
+    const modal = document.getElementById('project-modal');
+    function renderProjects() {
+      projectsGrid.innerHTML = PROJECTS.map((p) => `
+        <article class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all flex flex-col justify-between gap-4">
+          <div class="space-y-2.5">
+            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">${p.tag}</span>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">${p.title}</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${p.summary}</p>
+          </div>
+          <div class="space-y-4">
+            <div class="flex flex-wrap gap-1.5">
+              ${p.stack.map((t) => `<span class="px-2.5 py-0.5 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${t}</span>`).join('')}
+            </div>
+            <button type="button" data-project-id="${p.id}"
+              class="open-project-btn inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+              View details <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </article>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    projectsGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.open-project-btn');
+      if (!btn) return;
+      const proj = PROJECTS.find((p) => p.id === btn.dataset.projectId);
+      if (!proj) return;
+      document.getElementById('modal-tag').textContent = proj.tag;
+      document.getElementById('modal-title').textContent = proj.title;
+      document.getElementById('modal-desc').textContent = proj.summary;
+      document.getElementById('modal-highlights').innerHTML = proj.highlights.map((h) => `<li>${h}</li>`).join('');
+      document.getElementById('modal-stack').innerHTML = proj.stack
+        .map((t) => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">${t}</span>`)
+        .join('');
+      modal.classList.remove('hidden');
+    });
+
+    document.getElementById('close-modal-btn').addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.add('hidden');
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') modal.classList.add('hidden');
+    });
+
+    // Copy email with fallback
+    const toast = document.getElementById('toast');
+    let toastTimer = null;
+    function showToast() {
+      toast.classList.remove('translate-y-16', 'opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add('translate-y-16', 'opacity-0');
+      }, 2400);
+    }
+
+    document.getElementById('copy-email-btn').addEventListener('click', () => {
+      const email = 'ikraranugrah26@gmail.com';
+      const done = () => {
+        document.getElementById('copy-email-label').textContent = 'Copied!';
+        showToast();
+        setTimeout(() => {
+          document.getElementById('copy-email-label').textContent = 'Copy Email';
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(email).then(done).catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = email;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done();
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+
+    renderSkills();
+    renderProjects();
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>
