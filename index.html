@@ -114,7 +114,7 @@
   <!-- Navbar -->
   <header class="sticky top-0 z-40 glass-card bg-slate-50/80 dark:bg-[#070B14]/75 border-b border-slate-200/80 dark:border-slate-800/80">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="#top" class="flex items-center gap-2.5 font-display font-bold text-lg tracking-tight text-slate-900 dark:text-white group">
+      <a href="#top" data-route="home" data-anchor="#top" class="nav-route-link flex items-center gap-2.5 font-display font-bold text-lg tracking-tight text-slate-900 dark:text-white group">
         <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-cyan-500 text-white flex items-center justify-center text-sm font-extrabold shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">IA</span>
         <span class="flex items-center gap-1.5">
           Ikrar AB
@@ -123,10 +123,15 @@
       </a>
 
       <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-full px-2 py-1">
-        <a href="#about" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">About</a>
-        <a href="#skills" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Skills</a>
-        <a href="#projects" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Projects</a>
-        <a href="#contact" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Contact</a>
+        <a href="#about" data-route="home" data-anchor="#about" class="nav-route-link px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">About</a>
+        <a href="#skills" data-route="home" data-anchor="#skills" class="nav-route-link px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Skills</a>
+        <a href="#projects" data-route="home" data-anchor="#projects" class="nav-route-link px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Projects</a>
+        <a href="#contact" data-route="home" data-anchor="#contact" class="nav-route-link px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Contact</a>
+        <span class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></span>
+        <a href="#/playground" id="nav-playground-link" data-route="playground" class="nav-route-link inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 text-indigo-600 dark:text-cyan-300 font-semibold transition-colors">
+          <i data-lucide="code-2" class="w-3.5 h-3.5"></i>
+          <span>Playground</span>
+        </a>
       </nav>
 
       <div class="flex items-center gap-2">
@@ -152,14 +157,18 @@
 
     <!-- Mobile Nav -->
     <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 px-4 py-3 space-y-1 text-sm font-medium">
-      <a href="#about" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">About</a>
-      <a href="#skills" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Skills</a>
-      <a href="#projects" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Projects</a>
-      <a href="#contact" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Contact</a>
+      <a href="#about" data-route="home" data-anchor="#about" class="mobile-nav-link nav-route-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">About</a>
+      <a href="#skills" data-route="home" data-anchor="#skills" class="mobile-nav-link nav-route-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Skills</a>
+      <a href="#projects" data-route="home" data-anchor="#projects" class="mobile-nav-link nav-route-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Projects</a>
+      <a href="#contact" data-route="home" data-anchor="#contact" class="mobile-nav-link nav-route-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Contact</a>
+      <a href="#/playground" data-route="playground" class="mobile-nav-link nav-route-link flex items-center gap-2 py-2 px-3 rounded-lg text-indigo-600 dark:text-cyan-300 font-semibold hover:bg-indigo-500/10">
+        <i data-lucide="code-2" class="w-4 h-4"></i> Dev Playground
+      </a>
     </div>
   </header>
 
   <main id="top" class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+    <div id="page-home">
     <!-- Hero Section: Split Editorial + Interactive Terminal -->
     <section class="py-14 sm:py-20 lg:py-24 grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
       <!-- Left Hero Column -->
@@ -392,6 +401,181 @@
         </div>
       </div>
     </section>
+    </div>
+
+    <!-- Page 2: Dev Playground (#/playground) -->
+    <div id="page-playground" class="hidden py-10 sm:py-14 space-y-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <button id="back-to-profile-btn" type="button"
+            class="inline-flex items-center gap-1.5 text-xs font-mono text-indigo-600 dark:text-cyan-400 hover:underline mb-1">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Profile
+          </button>
+          <div class="flex items-center gap-3">
+            <h1 class="text-3xl sm:text-4xl font-display font-bold tracking-tight text-slate-900 dark:text-white">Dev Playground</h1>
+            <span class="font-mono text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border border-cyan-500/20">Interactive Tools</span>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-400">Test mock API endpoints, format JSON, and inspect Base64 or JWT tokens right in your browser.</p>
+        </div>
+
+        <!-- Tool Tabs -->
+        <div id="pg-tabs" class="inline-flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800">
+          <button type="button" data-pg-tab="api" class="pg-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-all">REST API</button>
+          <button type="button" data-pg-tab="json" class="pg-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">JSON Lab</button>
+          <button type="button" data-pg-tab="codec" class="pg-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all">Base64 &amp; JWT</button>
+        </div>
+      </div>
+
+      <!-- Tool 1: Mock REST API Explorer -->
+      <section id="pg-panel-api" class="pg-panel grid lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 glass-card rounded-3xl p-6 bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 space-y-5">
+          <div>
+            <h2 class="font-display font-bold text-lg text-slate-900 dark:text-white">Personal API Endpoints</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Select an endpoint and fire a simulated request.</p>
+          </div>
+
+          <div id="api-endpoints" class="space-y-2">
+            <button type="button" data-endpoint="profile" class="api-ep-btn w-full text-left p-3 rounded-2xl border border-indigo-500/60 bg-indigo-500/10 flex items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2.5 font-mono text-xs truncate">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold">GET</span>
+                <span class="text-slate-800 dark:text-slate-100 truncate">/api/v1/profile</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-indigo-500 shrink-0"></i>
+            </button>
+            <button type="button" data-endpoint="skills" class="api-ep-btn w-full text-left p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/40 hover:border-indigo-400 flex items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2.5 font-mono text-xs truncate">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold">GET</span>
+                <span class="text-slate-800 dark:text-slate-100 truncate">/api/v1/skills</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0"></i>
+            </button>
+            <button type="button" data-endpoint="projects" class="api-ep-btn w-full text-left p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/40 hover:border-indigo-400 flex items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2.5 font-mono text-xs truncate">
+                <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 font-bold">GET</span>
+                <span class="text-slate-800 dark:text-slate-100 truncate">/api/v1/projects</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0"></i>
+            </button>
+            <button type="button" data-endpoint="coffee" class="api-ep-btn w-full text-left p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/40 hover:border-indigo-400 flex items-center justify-between gap-2 transition-all">
+              <div class="flex items-center gap-2.5 font-mono text-xs truncate">
+                <span class="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-600 dark:text-amber-300 font-bold">POST</span>
+                <span class="text-slate-800 dark:text-slate-100 truncate">/api/v1/coffee</span>
+              </div>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400 shrink-0"></i>
+            </button>
+          </div>
+
+          <!-- Dynamic Param / Payload Box -->
+          <div id="api-skills-param" class="hidden space-y-1.5">
+            <label for="api-skill-cat" class="block font-mono text-xs text-slate-500 dark:text-slate-400">Query param: ?category=</label>
+            <select id="api-skill-cat" class="w-full px-3 py-2 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200">
+              <option value="all">all</option>
+              <option value="backend">backend</option>
+              <option value="frontend">frontend</option>
+              <option value="database">database</option>
+              <option value="devops">devops</option>
+            </select>
+          </div>
+
+          <div id="api-coffee-body" class="hidden space-y-1.5">
+            <label for="api-payload-input" class="block font-mono text-xs text-slate-500 dark:text-slate-400">Request JSON Body</label>
+            <textarea id="api-payload-input" rows="3" class="w-full p-3 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500">{"drink": "Es Kopi Susu", "sugar": "less", "ice": true}</textarea>
+          </div>
+
+          <button id="api-send-btn" type="button"
+            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-sm font-semibold shadow-lg shadow-indigo-500/20 transition-all">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            Send Request
+          </button>
+        </div>
+
+        <!-- Response Inspector -->
+        <div class="lg:col-span-7 rounded-3xl overflow-hidden border border-slate-300/80 dark:border-slate-800 bg-[#0D1117] text-slate-200 shadow-xl flex flex-col">
+          <div class="px-5 py-3.5 bg-[#161B22] border-b border-slate-800 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 font-mono text-xs">
+              <span id="api-status-badge" class="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-semibold">200 OK</span>
+              <span id="api-latency" class="text-slate-400">38 ms</span>
+              <span id="api-size" class="text-slate-500">· 0 B</span>
+            </div>
+            <button id="api-copy-btn" type="button" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-mono bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy JSON
+            </button>
+          </div>
+          <pre id="api-response-pre" class="term-scroll p-5 text-xs sm:text-[13px] font-mono overflow-auto max-h-[420px] text-cyan-200 leading-relaxed"></pre>
+        </div>
+      </section>
+
+      <!-- Tool 2: JSON Formatter & Validator -->
+      <section id="pg-panel-json" class="pg-panel hidden glass-card rounded-3xl p-6 bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="font-display font-bold text-lg text-slate-900 dark:text-white">JSON Formatter &amp; Validator</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Paste raw JSON to pretty-print, minify, and validate syntax instantly.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button id="json-sample-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">Load Sample</button>
+            <button id="json-format-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">Format (2sp)</button>
+            <button id="json-minify-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">Minify</button>
+            <button id="json-copy-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">Copy</button>
+            <button id="json-clear-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono text-rose-500 hover:bg-rose-500/10 transition-colors">Clear</button>
+          </div>
+        </div>
+
+        <div id="json-status" class="font-mono text-xs px-3.5 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20">
+          Valid JSON · Ready
+        </div>
+
+        <textarea id="json-editor" rows="12" spellcheck="false"
+          class="w-full p-4 rounded-2xl font-mono text-xs sm:text-[13px] bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-cyan-200 focus:outline-none focus:border-indigo-500 leading-relaxed"></textarea>
+      </section>
+
+      <!-- Tool 3: Base64 & JWT Inspector -->
+      <section id="pg-panel-codec" class="pg-panel hidden grid md:grid-cols-2 gap-6">
+        <!-- Base64 Box -->
+        <div class="glass-card rounded-3xl p-6 bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="font-display font-bold text-lg text-slate-900 dark:text-white">Base64 Encoder / Decoder</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">UTF-8 safe client-side conversion.</p>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="b64-plain" class="block font-mono text-xs text-slate-500 dark:text-slate-400">Plain Text</label>
+            <textarea id="b64-plain" rows="4" placeholder="Type text to encode..." class="w-full p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500">Hello from Bandung! — Ikrar AB</textarea>
+          </div>
+          <div class="flex gap-2">
+            <button id="b64-encode-btn" type="button" class="flex-1 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-500 text-white transition-colors">Encode ↓</button>
+            <button id="b64-decode-btn" type="button" class="flex-1 py-2 rounded-xl text-xs font-semibold bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-colors">Decode ↑</button>
+          </div>
+          <div class="space-y-1.5">
+            <label for="b64-encoded" class="block font-mono text-xs text-slate-500 dark:text-slate-400">Base64 Output</label>
+            <textarea id="b64-encoded" rows="4" placeholder="Paste Base64 to decode..." class="w-full p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-indigo-600 dark:text-cyan-300 focus:outline-none focus:border-indigo-500"></textarea>
+          </div>
+        </div>
+
+        <!-- JWT Decoder Box -->
+        <div class="glass-card rounded-3xl p-6 bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 space-y-4">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <h2 class="font-display font-bold text-lg text-slate-900 dark:text-white">JWT Payload Inspector</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Decode header &amp; claims locally (no data leaves browser).</p>
+            </div>
+            <button id="jwt-sample-btn" type="button" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-indigo-500/10 text-indigo-600 dark:text-cyan-300 hover:bg-indigo-500/20 transition-colors">Sample JWT</button>
+          </div>
+          <textarea id="jwt-input" rows="3" placeholder="Paste a JWT token (header.payload.signature)..." class="w-full p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+          <div class="grid grid-cols-1 gap-3">
+            <div>
+              <div class="font-mono text-[11px] uppercase tracking-wider text-rose-500 dark:text-rose-400 mb-1">Header</div>
+              <pre id="jwt-header-out" class="p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-rose-300 overflow-auto max-h-28">{}</pre>
+            </div>
+            <div>
+              <div class="font-mono text-[11px] uppercase tracking-wider text-indigo-500 dark:text-cyan-400 mb-1">Payload</div>
+              <pre id="jwt-payload-out" class="p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-[#0D1117] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-cyan-300 overflow-auto max-h-40">{}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <!-- Footer -->
@@ -452,6 +636,10 @@
         <button type="button" data-action="goto:#projects" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
           <span class="flex items-center gap-2.5"><i data-lucide="folder-code" class="w-4 h-4 text-emerald-500"></i> Jump to Projects</span>
           <span class="font-mono text-[11px] text-slate-400">#projects</span>
+        </button>
+        <button type="button" data-action="route:playground" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="code-2" class="w-4 h-4 text-cyan-400"></i> Open Dev Playground</span>
+          <span class="font-mono text-[11px] text-slate-400">#/playground</span>
         </button>
         <button type="button" data-action="theme" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
           <span class="flex items-center gap-2.5"><i data-lucide="sun-moon" class="w-4 h-4 text-amber-500"></i> Toggle Light / Dark Theme</span>
@@ -680,7 +868,10 @@
       const res = document.createElement('div');
       res.className = 'text-slate-300 pl-2 border-l-2 border-cyan-500/40';
       if (cmd === 'help') {
-        res.innerHTML = 'Available commands: <span class="text-cyan-300">whoami</span>, <span class="text-cyan-300">skills</span>, <span class="text-cyan-300">projects</span>, <span class="text-cyan-300">hobbies</span>, <span class="text-cyan-300">coffee</span>, <span class="text-cyan-300">theme</span>, <span class="text-cyan-300">clear</span>';
+        res.innerHTML = 'Available commands: <span class="text-cyan-300">whoami</span>, <span class="text-cyan-300">skills</span>, <span class="text-cyan-300">projects</span>, <span class="text-cyan-300">playground</span>, <span class="text-cyan-300">hobbies</span>, <span class="text-cyan-300">coffee</span>, <span class="text-cyan-300">theme</span>, <span class="text-cyan-300">clear</span>';
+      } else if (cmd === 'playground') {
+        res.innerHTML = 'Opening <span class="text-cyan-300">#/playground</span>...';
+        setTimeout(() => navigateTo('playground'), 200);
       } else if (cmd === 'whoami') {
         res.textContent = 'Ikrar Anugrah Bastary — Full-Stack Developer based in Bandung, ID.';
       } else if (cmd === 'skills') {
@@ -887,8 +1078,9 @@
       const act = item.dataset.action;
       closeCmd();
       if (act.startsWith('goto:')) {
-        const target = document.querySelector(act.slice(5));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        navigateTo('home', act.slice(5));
+      } else if (act.startsWith('route:')) {
+        navigateTo(act.slice(6));
       } else if (act === 'theme') {
         applyTheme(!root.classList.contains('dark'));
       } else if (act === 'copy-email') {
@@ -996,6 +1188,314 @@
       requestAnimationFrame(drawNodes);
     }
     requestAnimationFrame(drawNodes);
+
+    // Hash-based Multi-Page Router (ready for future pages)
+    let currentPage = 'home';
+    function navigateTo(page, anchor) {
+      currentPage = page === 'playground' ? 'playground' : 'home';
+      document.getElementById('page-home').classList.toggle('hidden', currentPage !== 'home');
+      document.getElementById('page-playground').classList.toggle('hidden', currentPage !== 'playground');
+
+      const pgNav = document.getElementById('nav-playground-link');
+      if (pgNav) {
+        if (currentPage === 'playground') {
+          pgNav.classList.add('bg-indigo-600', 'text-white', 'dark:text-white');
+          pgNav.classList.remove('text-indigo-600', 'dark:text-cyan-300');
+        } else {
+          pgNav.classList.remove('bg-indigo-600', 'text-white', 'dark:text-white');
+          pgNav.classList.add('text-indigo-600', 'dark:text-cyan-300');
+        }
+      }
+
+      if (currentPage === 'playground') {
+        if (window.location.hash !== '#/playground') {
+          history.replaceState(null, '', '#/playground');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        if (window.location.hash.startsWith('#/')) {
+          history.replaceState(null, '', anchor || '#top');
+        }
+        if (anchor && anchor !== '#top') {
+          setTimeout(() => {
+            const el = document.querySelector(anchor);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 30);
+        } else {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+      if (window.lucide) lucide.createIcons();
+    }
+
+    document.querySelectorAll('.nav-route-link').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const route = link.dataset.route;
+        if (!route) return;
+        e.preventDefault();
+        navigateTo(route, link.dataset.anchor);
+      });
+    });
+    document.getElementById('back-to-profile-btn').addEventListener('click', () => navigateTo('home', '#top'));
+    window.addEventListener('hashchange', () => {
+      if (window.location.hash === '#/playground') navigateTo('playground');
+      else if (currentPage !== 'home') navigateTo('home', window.location.hash || '#top');
+    });
+
+    // Helper for clipboard copy with fallback
+    function copyTextToClipboard(text, message) {
+      const done = () => showToast(message || 'Copied to clipboard!');
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(() => {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          done();
+        });
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    }
+
+    // Dev Playground: Tabs
+    document.getElementById('pg-tabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.pg-tab-btn');
+      if (!btn) return;
+      const tab = btn.dataset.pgTab;
+      document.querySelectorAll('.pg-tab-btn').forEach((b) => {
+        const active = b.dataset.pgTab === tab;
+        b.className = active
+          ? 'pg-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-all'
+          : 'pg-tab-btn px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all';
+      });
+      document.querySelectorAll('.pg-panel').forEach((panel) => {
+        panel.classList.toggle('hidden', panel.id !== `pg-panel-${tab}`);
+      });
+    });
+
+    // Tool 1: Mock REST API Explorer
+    let selectedEndpoint = 'profile';
+    let lastApiResponseText = '';
+    function selectEndpoint(ep) {
+      selectedEndpoint = ep;
+      document.querySelectorAll('.api-ep-btn').forEach((b) => {
+        const active = b.dataset.endpoint === ep;
+        b.className = active
+          ? 'api-ep-btn w-full text-left p-3 rounded-2xl border border-indigo-500/60 bg-indigo-500/10 flex items-center justify-between gap-2 transition-all'
+          : 'api-ep-btn w-full text-left p-3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/40 hover:border-indigo-400 flex items-center justify-between gap-2 transition-all';
+      });
+      document.getElementById('api-skills-param').classList.toggle('hidden', ep !== 'skills');
+      document.getElementById('api-coffee-body').classList.toggle('hidden', ep !== 'coffee');
+    }
+
+    function executeMockApi() {
+      const start = performance.now();
+      let status = '200 OK';
+      let isError = false;
+      let payload = {};
+
+      if (selectedEndpoint === 'profile') {
+        payload = {
+          status: 'success',
+          data: {
+            name: 'Ikrar Anugrah Bastary',
+            handle: '@IkrarAB',
+            role: 'Full-Stack Developer',
+            location: 'Bandung, Indonesia',
+            education: 'B.Sc. Informatics Engineering (UNIKOM)',
+            open_to_collaborate: true,
+            links: {
+              github: 'https://github.com/IkrarAB',
+              linkedin: 'https://www.linkedin.com/in/ikrarab/'
+            }
+          }
+        };
+      } else if (selectedEndpoint === 'skills') {
+        const cat = document.getElementById('api-skill-cat').value;
+        const filtered = cat === 'all' ? SKILLS : SKILLS.filter((s) => s.category === cat);
+        payload = {
+          status: 'success',
+          filter: cat,
+          count: filtered.length,
+          data: filtered
+        };
+      } else if (selectedEndpoint === 'projects') {
+        payload = {
+          status: 'success',
+          count: PROJECTS.length,
+          data: PROJECTS.map(({ id, tag, title, summary, stack }) => ({ id, tag, title, summary, stack }))
+        };
+      } else if (selectedEndpoint === 'coffee') {
+        try {
+          const parsed = JSON.parse(document.getElementById('api-payload-input').value);
+          status = '201 Created';
+          payload = {
+            status: 'brewed',
+            order_id: 'BDG-' + Math.floor(1000 + Math.random() * 9000),
+            received: parsed,
+            message: 'Barista pipeline succeeded. Coding buff +10 active.'
+          };
+          if (window.confetti) confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+        } catch (err) {
+          status = '400 Bad Request';
+          isError = true;
+          payload = { status: 'error', message: 'Invalid JSON body: ' + err.message };
+        }
+      }
+
+      const jsonStr = JSON.stringify(payload, null, 2);
+      lastApiResponseText = jsonStr;
+      const elapsed = Math.max(18, Math.round(performance.now() - start + 24 + Math.random() * 25));
+      const badge = document.getElementById('api-status-badge');
+      badge.textContent = status;
+      badge.className = isError
+        ? 'px-2.5 py-0.5 rounded-md bg-rose-500/20 text-rose-300 font-semibold'
+        : 'px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 font-semibold';
+      document.getElementById('api-latency').textContent = `${elapsed} ms`;
+      document.getElementById('api-size').textContent = `· ${new Blob([jsonStr]).size} B`;
+      document.getElementById('api-response-pre').textContent = jsonStr;
+    }
+
+    document.getElementById('api-endpoints').addEventListener('click', (e) => {
+      const btn = e.target.closest('.api-ep-btn');
+      if (!btn) return;
+      selectEndpoint(btn.dataset.endpoint);
+      executeMockApi();
+    });
+    document.getElementById('api-skill-cat').addEventListener('change', executeMockApi);
+    document.getElementById('api-send-btn').addEventListener('click', executeMockApi);
+    document.getElementById('api-copy-btn').addEventListener('click', () => {
+      copyTextToClipboard(lastApiResponseText, 'Copied API JSON response!');
+    });
+
+    // Tool 2: JSON Formatter & Validator
+    const jsonEditor = document.getElementById('json-editor');
+    const jsonStatus = document.getElementById('json-status');
+    const SAMPLE_JSON = {
+      service: 'billing-api',
+      version: '2.4.0',
+      maintainer: 'Ikrar AB',
+      stack: ['Laravel', 'PostgreSQL', 'Docker'],
+      healthy: true,
+      endpoints: ['/v1/invoices', '/v1/virtual-accounts']
+    };
+
+    function validateJson() {
+      const val = jsonEditor.value.trim();
+      if (!val) {
+        jsonStatus.textContent = 'Empty input · Paste JSON or click Load Sample';
+        jsonStatus.className = 'font-mono text-xs px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700';
+        return null;
+      }
+      try {
+        const parsed = JSON.parse(val);
+        const keys = typeof parsed === 'object' && parsed !== null ? Object.keys(parsed).length : 0;
+        jsonStatus.textContent = `Valid JSON · ${Array.isArray(parsed) ? parsed.length + ' items' : keys + ' top-level keys'}`;
+        jsonStatus.className = 'font-mono text-xs px-3.5 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border border-emerald-500/20';
+        return parsed;
+      } catch (err) {
+        jsonStatus.textContent = 'SyntaxError: ' + err.message;
+        jsonStatus.className = 'font-mono text-xs px-3.5 py-2 rounded-xl bg-rose-500/10 text-rose-600 dark:text-rose-300 border border-rose-500/20';
+        return null;
+      }
+    }
+
+    jsonEditor.value = JSON.stringify(SAMPLE_JSON, null, 2);
+    jsonEditor.addEventListener('input', validateJson);
+    document.getElementById('json-sample-btn').addEventListener('click', () => {
+      jsonEditor.value = JSON.stringify(SAMPLE_JSON, null, 2);
+      validateJson();
+    });
+    document.getElementById('json-format-btn').addEventListener('click', () => {
+      const parsed = validateJson();
+      if (parsed !== null) jsonEditor.value = JSON.stringify(parsed, null, 2);
+    });
+    document.getElementById('json-minify-btn').addEventListener('click', () => {
+      const parsed = validateJson();
+      if (parsed !== null) jsonEditor.value = JSON.stringify(parsed);
+    });
+    document.getElementById('json-copy-btn').addEventListener('click', () => {
+      copyTextToClipboard(jsonEditor.value, 'Copied JSON to clipboard!');
+    });
+    document.getElementById('json-clear-btn').addEventListener('click', () => {
+      jsonEditor.value = '';
+      validateJson();
+    });
+
+    // Tool 3: Base64 & JWT Inspector
+    const b64Plain = document.getElementById('b64-plain');
+    const b64Encoded = document.getElementById('b64-encoded');
+    function encodeB64() {
+      try {
+        const bytes = new TextEncoder().encode(b64Plain.value);
+        let bin = '';
+        bytes.forEach((b) => { bin += String.fromCharCode(b); });
+        b64Encoded.value = btoa(bin);
+      } catch (err) {
+        b64Encoded.value = 'Encode error: ' + err.message;
+      }
+    }
+    function decodeB64() {
+      try {
+        const bin = atob(b64Encoded.value.trim());
+        const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+        b64Plain.value = new TextDecoder().decode(bytes);
+      } catch (err) {
+        b64Plain.value = 'Invalid Base64 string';
+      }
+    }
+    document.getElementById('b64-encode-btn').addEventListener('click', encodeB64);
+    document.getElementById('b64-decode-btn').addEventListener('click', decodeB64);
+
+    const jwtInput = document.getElementById('jwt-input');
+    const SAMPLE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJJa3JhckFCIiwibmFtZSI6IklrcmFyIEFudWdyYWggQmFzdGFyeSIsInJvbGUiOiJGdWxsLVN0YWNrIERldmVsb3BlciIsImNpdHkiOiJCYW5kdW5nIn0.demo_signature_only';
+    function decodeJwtPart(part) {
+      const norm = part.replace(/-/g, '+').replace(/_/g, '/');
+      const pad = norm + '='.repeat((4 - (norm.length % 4)) % 4);
+      const bin = atob(pad);
+      const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+    function inspectJwt() {
+      const token = jwtInput.value.trim();
+      const parts = token.split('.');
+      if (parts.length < 2) {
+        document.getElementById('jwt-header-out').textContent = 'Enter a valid JWT (header.payload.signature)';
+        document.getElementById('jwt-payload-out').textContent = '{}';
+        return;
+      }
+      try {
+        document.getElementById('jwt-header-out').textContent = JSON.stringify(decodeJwtPart(parts[0]), null, 2);
+        document.getElementById('jwt-payload-out').textContent = JSON.stringify(decodeJwtPart(parts[1]), null, 2);
+      } catch (err) {
+        document.getElementById('jwt-header-out').textContent = 'Decode error: invalid Base64URL/JSON';
+        document.getElementById('jwt-payload-out').textContent = '{}';
+      }
+    }
+    jwtInput.addEventListener('input', inspectJwt);
+    document.getElementById('jwt-sample-btn').addEventListener('click', () => {
+      jwtInput.value = SAMPLE_JWT;
+      inspectJwt();
+    });
+
+    // Init Playground defaults
+    executeMockApi();
+    validateJson();
+    encodeB64();
+    jwtInput.value = SAMPLE_JWT;
+    inspectJwt();
+    if (window.location.hash === '#/playground') {
+      navigateTo('playground');
+    }
 
     renderSkills();
     renderProjects();
