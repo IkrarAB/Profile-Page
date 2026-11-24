@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +11,9 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'sans-serif'],
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['Space Grotesk', 'Inter', 'ui-sans-serif', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
           },
         },
       },
@@ -19,233 +21,493 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   <style>
-    body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, .font-display {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    .mesh-bg {
+      background-image:
+        radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.22) 0px, transparent 50%),
+        radial-gradient(at 85% 10%, rgba(6, 182, 212, 0.18) 0px, transparent 45%),
+        radial-gradient(at 50% 85%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
+    }
+    html:not(.dark) .mesh-bg {
+      background-image:
+        radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.14) 0px, transparent 50%),
+        radial-gradient(at 85% 10%, rgba(6, 182, 212, 0.12) 0px, transparent 45%),
+        radial-gradient(at 50% 85%, rgba(16, 185, 129, 0.10) 0px, transparent 50%);
+    }
+    .glass-card {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .spotlight-card {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .spotlight-card:hover {
+      transform: translateY(-4px);
+    }
+    .spotlight-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(360px circle at var(--mx, 50%) var(--my, 50%), rgba(99, 102, 241, 0.16), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+    }
+    .spotlight-card:hover::before {
+      opacity: 1;
+    }
+    .typing-cursor::after {
+      content: '|';
+      margin-left: 2px;
+      animation: blink 1s step-end infinite;
+      color: #22d3ee;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .float-slow {
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* Custom scrollbar for terminal */
+    .term-scroll::-webkit-scrollbar { width: 6px; }
+    .term-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 9999px; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 antialiased">
+<body class="bg-slate-50 text-slate-800 dark:bg-[#070B14] dark:text-slate-100 transition-colors duration-300 antialiased relative">
+  <!-- Top Reading Progress Bar -->
+  <div id="scroll-progress" class="fixed top-0 left-0 h-[3px] w-0 z-50 bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 transition-all duration-75"></div>
+
+  <!-- Interactive Constellation Canvas Background -->
+  <canvas id="bg-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-60 dark:opacity-75"></canvas>
+
+  <!-- Ambient Mesh Gradient Layer -->
+  <div class="fixed inset-0 mesh-bg pointer-events-none z-0"></div>
+
   <!-- Navbar -->
-  <header class="sticky top-0 z-40 backdrop-blur-md bg-slate-50/85 dark:bg-slate-950/85 border-b border-slate-200 dark:border-slate-800">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-      <a href="#top" class="flex items-center gap-2 font-bold text-lg tracking-tight text-slate-900 dark:text-white">
-        <span class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-sm font-extrabold">IA</span>
-        <span>Ikrar AB</span>
+  <header class="sticky top-0 z-40 glass-card bg-slate-50/80 dark:bg-[#070B14]/75 border-b border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2.5 font-display font-bold text-lg tracking-tight text-slate-900 dark:text-white group">
+        <span class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-violet-500 to-cyan-500 text-white flex items-center justify-center text-sm font-extrabold shadow-md shadow-indigo-500/25 group-hover:scale-105 transition-transform">IA</span>
+        <span class="flex items-center gap-1.5">
+          Ikrar AB
+          <span class="hidden sm:inline-block font-mono text-[11px] px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-cyan-300 border border-indigo-500/20 dark:border-cyan-400/20">v2.0</span>
+        </span>
       </a>
 
-      <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
-        <a href="#about" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">About</a>
-        <a href="#skills" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Skills</a>
-        <a href="#projects" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Projects</a>
-        <a href="#contact" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">Contact</a>
+      <nav class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white/70 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-full px-2 py-1">
+        <a href="#about" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">About</a>
+        <a href="#skills" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Skills</a>
+        <a href="#projects" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Projects</a>
+        <a href="#contact" class="px-3.5 py-1.5 rounded-full hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:text-cyan-300 transition-colors">Contact</a>
       </nav>
 
       <div class="flex items-center gap-2">
+        <button id="cmd-palette-btn" type="button" aria-label="Open quick command palette"
+          class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-xs font-mono text-slate-500 dark:text-slate-400 hover:border-indigo-400 dark:hover:border-cyan-400/60 hover:text-slate-800 dark:hover:text-slate-200 transition-colors">
+          <i data-lucide="command" class="w-3.5 h-3.5"></i>
+          <span>Quick Jump</span>
+          <kbd class="px-1.5 py-0.5 text-[10px] rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">K</kbd>
+        </button>
+
         <button id="theme-toggle" type="button" aria-label="Toggle dark mode"
-          class="p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+          class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-amber-300 hover:border-indigo-400 dark:hover:border-cyan-400/60 transition-colors">
           <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
           <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
         </button>
+
         <button id="mobile-menu-btn" type="button" aria-label="Toggle menu"
-          class="sm:hidden p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200">
+          class="md:hidden p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 text-slate-700 dark:text-slate-200">
           <i data-lucide="menu" class="w-4 h-4"></i>
         </button>
       </div>
     </div>
 
     <!-- Mobile Nav -->
-    <div id="mobile-menu" class="hidden sm:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-3 space-y-2 text-sm font-medium">
-      <a href="#about" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">About</a>
-      <a href="#skills" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Skills</a>
-      <a href="#projects" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Projects</a>
-      <a href="#contact" class="mobile-nav-link block py-1.5 text-slate-700 dark:text-slate-200 hover:text-indigo-600">Contact</a>
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 px-4 py-3 space-y-1 text-sm font-medium">
+      <a href="#about" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">About</a>
+      <a href="#skills" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Skills</a>
+      <a href="#projects" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Projects</a>
+      <a href="#contact" class="mobile-nav-link block py-2 px-3 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-indigo-500/10">Contact</a>
     </div>
   </header>
 
-  <main id="top" class="max-w-5xl mx-auto px-4 sm:px-6">
-    <!-- Hero -->
-    <section class="py-16 sm:py-24 flex flex-col items-start gap-6">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        Bandung, Indonesia · Full-Stack Developer
-      </div>
-
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight max-w-3xl">
-        Hey, I'm <span class="text-indigo-600 dark:text-indigo-400">Ikrar Anugrah Bastary</span>.
-      </h1>
-
-      <p class="text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-        I build reliable full-stack web apps, clean RESTful APIs, and scalable relational database systems. Focused on practical, maintainable code that gets the job done.
-      </p>
-
-      <div class="flex flex-wrap items-center gap-3 pt-2">
-        <a href="#projects"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-colors">
-          <i data-lucide="folder-code" class="w-4 h-4"></i>
-          View Projects
-        </a>
-        <a href="https://github.com/IkrarAB" target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
-          <i data-lucide="github" class="w-4 h-4"></i>
-          GitHub
-        </a>
-        <a href="https://www.linkedin.com/in/ikrarab/" target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
-          <i data-lucide="linkedin" class="w-4 h-4"></i>
-          LinkedIn
-        </a>
-      </div>
-    </section>
-
-    <!-- About -->
-    <section id="about" class="py-12 border-t border-slate-200 dark:border-slate-800">
-      <div class="grid md:grid-cols-3 gap-8 items-start">
-        <div class="md:col-span-2 space-y-4">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">About Me</h2>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
-            I'm an Informatics Engineering graduate from Universitas Komputer Indonesia (UNIKOM) with over 2 years of hands-on experience developing and maintaining full-stack web applications and backend services.
-          </p>
-          <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
-            Most of my day-to-day work revolves around PHP (Laravel, CodeIgniter), JavaScript, RESTful APIs, and relational databases like MySQL and PostgreSQL. When I'm away from work code, I enjoy tinkering with self-hosted Linux game servers, exploring new tech peripherals, playing PC games, and hanging out around Bandung.
-          </p>
+  <main id="top" class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+    <!-- Hero Section: Split Editorial + Interactive Terminal -->
+    <section class="py-14 sm:py-20 lg:py-24 grid lg:grid-cols-12 gap-10 lg:gap-8 items-center">
+      <!-- Left Hero Column -->
+      <div class="lg:col-span-7 flex flex-col items-start gap-5">
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full text-xs font-mono bg-white/80 dark:bg-slate-900/80 text-indigo-700 dark:text-cyan-300 border border-indigo-200 dark:border-cyan-500/30 shadow-sm">
+          <span class="relative flex h-2.5 w-2.5">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+          </span>
+          <span>Bandung, ID · Available for cool builds</span>
         </div>
 
-        <div class="grid grid-cols-1 gap-3">
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Experience</div>
-            <div class="mt-1 font-bold text-slate-900 dark:text-white">2+ Years Full-Stack</div>
-            <div class="text-sm text-slate-500 dark:text-slate-400">Web apps, APIs & billing systems</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Education</div>
-            <div class="mt-1 font-bold text-slate-900 dark:text-white">B.Sc. Informatics (S.Kom)</div>
-            <div class="text-sm text-slate-500 dark:text-slate-400">Universitas Komputer Indonesia</div>
-          </div>
-          <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-            <div class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Off the Clock</div>
-            <div class="mt-1 font-bold text-slate-900 dark:text-white">Gaming & Linux Servers</div>
-            <div class="text-sm text-slate-500 dark:text-slate-400">Docker, mechanical keyboards & coffee</div>
-          </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-display font-bold tracking-tight text-slate-900 dark:text-white leading-[1.08]">
+          Hey, I'm <br class="hidden sm:inline" />
+          <span class="bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 bg-clip-text text-transparent">
+            Ikrar Anugrah Bastary
+          </span>
+        </h1>
+
+        <div class="flex items-center gap-2 text-lg sm:text-xl font-mono text-slate-700 dark:text-slate-300 min-h-[2rem]">
+          <span class="text-indigo-500 dark:text-cyan-400 font-bold">&gt;</span>
+          <span id="role-rotator" class="typing-cursor font-medium">Full-Stack Developer</span>
         </div>
-      </div>
-    </section>
 
-    <!-- Skills -->
-    <section id="skills" class="py-12 border-t border-slate-200 dark:border-slate-800">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Tech Stack & Skills</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Filter by category to explore the tools I work with.</p>
-        </div>
-        <div id="skill-filters" class="flex flex-wrap gap-2">
-          <button type="button" data-filter="all" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors">All</button>
-          <button type="button" data-filter="backend" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Backend</button>
-          <button type="button" data-filter="frontend" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Frontend</button>
-          <button type="button" data-filter="database" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Database</button>
-          <button type="button" data-filter="devops" class="skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors">Tools & DevOps</button>
-        </div>
-      </div>
+        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-xl leading-relaxed">
+          I build resilient full-stack web apps, clean RESTful APIs, and scalable relational database systems—turning messy enterprise workflows into smooth, maintainable software.
+        </p>
 
-      <div id="skills-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects" class="py-12 border-t border-slate-200 dark:border-slate-800">
-      <div class="mb-6">
-        <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Highlighted Work & Projects</h2>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">A snapshot of systems and side projects I've built and contributed to.</p>
-      </div>
-
-      <div id="projects-grid" class="grid sm:grid-cols-2 gap-5"></div>
-    </section>
-
-    <!-- Contact -->
-    <section id="contact" class="py-14 border-t border-slate-200 dark:border-slate-800">
-      <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-8 sm:p-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-        <div class="space-y-2 max-w-lg">
-          <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Let's connect</h2>
-          <p class="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
-            Open to interesting web development projects, backend collaborations, or just chatting about tech and games.
-          </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-          <button id="copy-email-btn" type="button"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition-colors">
-            <i data-lucide="copy" class="w-4 h-4"></i>
-            <span id="copy-email-label">Copy Email</span>
-          </button>
-          <a href="mailto:ikraranugrah26@gmail.com"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-colors">
-            <i data-lucide="mail" class="w-4 h-4"></i>
-            Send Email
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a href="#projects"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white text-sm font-semibold shadow-lg shadow-indigo-500/25 transition-all hover:-translate-y-0.5">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            Explore Work
           </a>
+          <a href="https://github.com/IkrarAB" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 hover:border-indigo-400 dark:hover:border-cyan-400 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-all hover:-translate-y-0.5">
+            <i data-lucide="github" class="w-4 h-4"></i>
+            @IkrarAB
+          </a>
+          <a href="https://www.linkedin.com/in/ikrarab/" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 hover:border-indigo-400 dark:hover:border-cyan-400 text-slate-800 dark:text-slate-100 text-sm font-semibold transition-all hover:-translate-y-0.5">
+            <i data-lucide="linkedin" class="w-4 h-4"></i>
+            LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Right Hero Column: Interactive Developer Terminal -->
+      <div class="lg:col-span-5">
+        <div class="float-slow rounded-2xl overflow-hidden border border-slate-300/80 dark:border-slate-700/80 bg-[#0D1117] text-slate-200 shadow-2xl shadow-indigo-950/30">
+          <!-- Window Bar -->
+          <div class="px-4 py-3 bg-[#161B22] border-b border-slate-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-rose-500/90"></span>
+              <span class="w-3 h-3 rounded-full bg-amber-400/90"></span>
+              <span class="w-3 h-3 rounded-full bg-emerald-400/90"></span>
+            </div>
+            <span class="font-mono text-xs text-slate-400">ikrar@bandung: ~/profile</span>
+            <button id="term-clear-btn" type="button" class="text-[11px] font-mono text-slate-400 hover:text-cyan-300 transition-colors">clear</button>
+          </div>
+
+          <!-- Terminal Output -->
+          <div id="term-output" class="term-scroll p-4 h-60 overflow-y-auto font-mono text-xs sm:text-[13px] space-y-2 leading-relaxed">
+            <div class="text-slate-400">Welcome to Ikrar's interactive shell. Type <span class="text-cyan-300">help</span> or tap a command below.</div>
+            <div><span class="text-emerald-400">ikrar@bandung</span>:<span class="text-indigo-400">~</span>$ whoami</div>
+            <div class="text-slate-300 pl-2 border-l-2 border-indigo-500/50">
+              Ikrar Anugrah Bastary — Full-Stack Developer (Laravel, Vue, SQL, Docker).<br />
+              Currently crafting reliable web systems from Bandung, ID.
+            </div>
+          </div>
+
+          <!-- Quick Command Chips -->
+          <div class="px-4 py-2 bg-[#161B22]/70 border-t border-slate-800/80 flex flex-wrap gap-1.5">
+            <button type="button" data-cmd="skills" class="term-chip px-2.5 py-1 rounded-md text-[11px] font-mono bg-slate-800 hover:bg-indigo-600 text-cyan-300 hover:text-white transition-colors">skills</button>
+            <button type="button" data-cmd="projects" class="term-chip px-2.5 py-1 rounded-md text-[11px] font-mono bg-slate-800 hover:bg-indigo-600 text-cyan-300 hover:text-white transition-colors">projects</button>
+            <button type="button" data-cmd="hobbies" class="term-chip px-2.5 py-1 rounded-md text-[11px] font-mono bg-slate-800 hover:bg-indigo-600 text-cyan-300 hover:text-white transition-colors">hobbies</button>
+            <button type="button" data-cmd="coffee" class="term-chip px-2.5 py-1 rounded-md text-[11px] font-mono bg-slate-800 hover:bg-indigo-600 text-emerald-300 hover:text-white transition-colors">coffee</button>
+            <button type="button" data-cmd="help" class="term-chip px-2.5 py-1 rounded-md text-[11px] font-mono bg-slate-800 hover:bg-indigo-600 text-slate-300 hover:text-white transition-colors">help</button>
+          </div>
+
+          <!-- Interactive Input -->
+          <form id="term-form" class="px-4 py-2.5 bg-[#0D1117] border-t border-slate-800 flex items-center gap-2 font-mono text-xs sm:text-[13px]">
+            <span class="text-emerald-400 shrink-0">$</span>
+            <input id="term-input" type="text" autocomplete="off" spellcheck="false" placeholder="Type a command (e.g. help, coffee, theme)..."
+              class="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none" />
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bento Grid: About Me -->
+    <section id="about" class="py-12 sm:py-16 reveal">
+      <div class="flex items-end justify-between mb-6">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-indigo-600 dark:text-cyan-400">01 // Overview</span>
+          <h2 class="text-2xl sm:text-3xl font-display font-bold tracking-tight text-slate-900 dark:text-white mt-1">About Me</h2>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-12 gap-4">
+        <!-- Main Story Bento Card -->
+        <div class="md:col-span-7 spotlight-card glass-card p-6 sm:p-7 rounded-3xl bg-white/85 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 space-y-4">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-indigo-600 dark:text-cyan-400">
+            <i data-lucide="terminal" class="w-4 h-4"></i>
+            <span>README.md</span>
+          </div>
+          <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+            I'm an Informatics Engineering graduate from <strong class="text-slate-900 dark:text-white font-semibold">Universitas Komputer Indonesia (UNIKOM)</strong> with over 2 years of hands-on experience developing and maintaining full-stack web applications and backend services.
+          </p>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+            Most of my day-to-day work revolves around PHP (Laravel, CodeIgniter), JavaScript, RESTful APIs, and relational databases like MySQL and PostgreSQL. I care about clean architecture, reliable pipelines, and code your future self won't hate reading.
+          </p>
+          <div class="pt-2 flex flex-wrap gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-500/20">Clean Code</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-cyan-500/10 text-cyan-700 dark:text-cyan-300 border border-cyan-500/20">Scalable APIs</span>
+            <span class="px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">DB Optimization</span>
+          </div>
+        </div>
+
+        <!-- Live Bandung Clock + Experience Bento Stack -->
+        <div class="md:col-span-5 grid grid-cols-2 gap-4">
+          <!-- Live Clock Card -->
+          <div class="col-span-2 spotlight-card glass-card p-5 rounded-3xl bg-gradient-to-br from-indigo-600/10 via-white/90 to-cyan-500/10 dark:from-indigo-500/15 dark:via-slate-900/80 dark:to-cyan-500/15 border border-indigo-200/80 dark:border-slate-800 flex items-center justify-between gap-4">
+            <div>
+              <div class="text-[11px] font-mono uppercase tracking-wider text-indigo-600 dark:text-cyan-400 flex items-center gap-1.5">
+                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Bandung, Indonesia
+              </div>
+              <div id="live-clock" class="mt-1 text-2xl sm:text-3xl font-mono font-bold text-slate-900 dark:text-white tracking-tight">--:--:--</div>
+              <div id="live-status" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">WIB (UTC+7)</div>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-indigo-500/15 dark:bg-cyan-400/10 border border-indigo-500/20 dark:border-cyan-400/20 flex items-center justify-center text-indigo-600 dark:text-cyan-300">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+          </div>
+
+          <!-- Experience Card -->
+          <div class="spotlight-card glass-card p-5 rounded-3xl bg-white/85 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800">
+            <div class="text-2xl sm:text-3xl font-display font-bold text-indigo-600 dark:text-indigo-400">2+</div>
+            <div class="mt-1 font-semibold text-sm text-slate-900 dark:text-white">Years Exp</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Full-stack &amp; billing APIs</div>
+          </div>
+
+          <!-- Education Card -->
+          <div class="spotlight-card glass-card p-5 rounded-3xl bg-white/85 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800">
+            <div class="text-2xl sm:text-3xl font-display font-bold text-emerald-600 dark:text-emerald-400">S.Kom</div>
+            <div class="mt-1 font-semibold text-sm text-slate-900 dark:text-white">Informatics</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">UNIKOM Bandung</div>
+          </div>
+        </div>
+
+        <!-- Interactive Off-The-Clock Vibe Card -->
+        <div class="md:col-span-12 spotlight-card glass-card p-6 rounded-3xl bg-white/85 dark:bg-slate-900/70 border border-slate-200/90 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div class="space-y-1.5">
+            <div class="text-xs font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Off the Clock // Interactive</div>
+            <div id="vibe-caption" class="text-sm sm:text-base font-medium text-slate-800 dark:text-slate-200">
+              Tap an interest to see what I'm usually up to outside work hours.
+            </div>
+          </div>
+          <div id="vibe-pills" class="flex flex-wrap gap-2">
+            <button type="button" data-vibe="gaming" class="vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all">PC &amp; Console Gaming</button>
+            <button type="button" data-vibe="linux" class="vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all">Linux Game Servers</button>
+            <button type="button" data-vibe="keyboards" class="vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all">Mechanical Keyboards</button>
+            <button type="button" data-vibe="coffee" class="vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all">Bandung Coffee &amp; Food</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-12 sm:py-16 reveal">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+        <div>
+          <span class="font-mono text-xs uppercase tracking-widest text-indigo-600 dark:text-cyan-400">02 // Arsenal</span>
+          <h2 class="text-2xl sm:text-3xl font-display font-bold tracking-tight text-slate-900 dark:text-white mt-1 flex items-center gap-3">
+            Tech Stack &amp; Skills
+            <span id="skill-count-badge" class="font-mono text-xs px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-cyan-300 border border-indigo-500/20">16 tools</span>
+          </h2>
+        </div>
+
+        <div id="skill-filters" class="flex flex-wrap gap-2">
+          <button type="button" data-filter="all" class="skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-all">All</button>
+          <button type="button" data-filter="backend" class="skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all">Backend</button>
+          <button type="button" data-filter="frontend" class="skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all">Frontend</button>
+          <button type="button" data-filter="database" class="skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all">Database</button>
+          <button type="button" data-filter="devops" class="skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all">Tools &amp; DevOps</button>
+        </div>
+      </div>
+
+      <div id="skills-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5"></div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-12 sm:py-16 reveal">
+      <div class="mb-7">
+        <span class="font-mono text-xs uppercase tracking-widest text-indigo-600 dark:text-cyan-400">03 // Builds</span>
+        <h2 class="text-2xl sm:text-3xl font-display font-bold tracking-tight text-slate-900 dark:text-white mt-1">Highlighted Work &amp; Projects</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Click any card to inspect the technical highlights and architecture stack.</p>
+      </div>
+
+      <div id="projects-grid" class="grid md:grid-cols-2 gap-6"></div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-14 sm:py-20 reveal">
+      <div class="relative overflow-hidden rounded-3xl p-8 sm:p-12 border border-indigo-200/80 dark:border-slate-800 bg-gradient-to-br from-indigo-600 via-violet-600 to-cyan-600 text-white shadow-2xl shadow-indigo-500/20">
+        <div class="absolute -right-16 -top-16 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-16 -bottom-16 w-64 h-64 rounded-full bg-emerald-400/20 blur-2xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+          <div class="space-y-3 max-w-xl">
+            <span class="inline-block font-mono text-xs uppercase tracking-widest px-3 py-1 rounded-full bg-white/15 border border-white/20">04 // Say Hello</span>
+            <h2 class="text-3xl sm:text-4xl font-display font-bold tracking-tight">Let's build something cool together.</h2>
+            <p class="text-indigo-100 text-sm sm:text-base leading-relaxed">
+              Open to interesting full-stack projects, backend collaborations, database migrations, or just geeking out over Linux servers and games.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button id="copy-email-btn" type="button"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-slate-900 hover:bg-indigo-50 text-sm font-semibold shadow-lg transition-all hover:-translate-y-0.5">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+              <span id="copy-email-label">Copy Email</span>
+            </button>
+            <a href="mailto:ikraranugrah26@gmail.com"
+              class="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-950/30 hover:bg-slate-950/50 border border-white/25 text-white text-sm font-semibold transition-all hover:-translate-y-0.5">
+              <i data-lucide="mail" class="w-4 h-4"></i>
+              Send Email
+            </a>
+          </div>
         </div>
       </div>
     </section>
   </main>
 
   <!-- Footer -->
-  <footer class="border-t border-slate-200 dark:border-slate-800 py-8 mt-6">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
-      <p>&copy; 2026 Ikrar Anugrah Bastary. Built with HTML &amp; Tailwind CSS.</p>
-      <a href="#top" class="inline-flex items-center gap-1.5 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-        Back to top <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
-      </a>
+  <footer class="relative z-10 border-t border-slate-200/80 dark:border-slate-800/80 py-8 mt-4">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+      <p class="font-mono text-xs">&copy; 2026 Ikrar Anugrah Bastary · Crafted in Bandung</p>
+      <div class="flex items-center gap-5 text-xs font-mono">
+        <a href="https://github.com/IkrarAB" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 dark:hover:text-cyan-400 transition-colors">GitHub</a>
+        <a href="https://www.linkedin.com/in/ikrarab/" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 dark:hover:text-cyan-400 transition-colors">LinkedIn</a>
+        <a href="#top" class="inline-flex items-center gap-1 hover:text-indigo-600 dark:hover:text-cyan-400 transition-colors">
+          Top <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+        </a>
+      </div>
     </div>
   </footer>
 
   <!-- Project Detail Modal -->
-  <div id="project-modal" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-xl space-y-4">
+  <div id="project-modal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#0D1322] border border-slate-200 dark:border-slate-700/80 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-5">
       <div class="flex items-start justify-between gap-4">
         <div>
-          <span id="modal-tag" class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400"></span>
-          <h3 id="modal-title" class="text-xl font-bold text-slate-900 dark:text-white mt-1"></h3>
+          <span id="modal-tag" class="font-mono text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-cyan-400"></span>
+          <h3 id="modal-title" class="text-xl sm:text-2xl font-display font-bold text-slate-900 dark:text-white mt-1"></h3>
         </div>
         <button id="close-modal-btn" type="button" aria-label="Close modal"
-          class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">
+          class="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
       <p id="modal-desc" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed"></p>
       <div>
-        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Key Highlights</div>
-        <ul id="modal-highlights" class="space-y-1.5 text-sm text-slate-700 dark:text-slate-300 list-disc pl-5"></ul>
+        <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2.5">Key Highlights</div>
+        <ul id="modal-highlights" class="space-y-2 text-sm text-slate-700 dark:text-slate-300 list-disc pl-5"></ul>
       </div>
-      <div id="modal-stack" class="flex flex-wrap gap-2 pt-2"></div>
+      <div id="modal-stack" class="flex flex-wrap gap-2 pt-2 border-t border-slate-200 dark:border-slate-800"></div>
+    </div>
+  </div>
+
+  <!-- Quick Command Palette Modal -->
+  <div id="cmd-modal" class="hidden fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-start justify-center pt-24 p-4">
+    <div class="bg-white dark:bg-[#0D1322] border border-slate-200 dark:border-slate-700/80 rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+      <div class="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs font-mono text-slate-500 dark:text-slate-400">
+          <i data-lucide="command" class="w-4 h-4 text-indigo-500 dark:text-cyan-400"></i>
+          <span>Quick Actions</span>
+        </div>
+        <button id="close-cmd-btn" type="button" aria-label="Close quick actions" class="text-xs font-mono text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">ESC</button>
+      </div>
+      <div id="cmd-list" class="p-2 space-y-1 text-sm">
+        <button type="button" data-action="goto:#about" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="user" class="w-4 h-4 text-indigo-500"></i> Jump to About Me</span>
+          <span class="font-mono text-[11px] text-slate-400">#about</span>
+        </button>
+        <button type="button" data-action="goto:#skills" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="cpu" class="w-4 h-4 text-cyan-500"></i> Jump to Tech Stack</span>
+          <span class="font-mono text-[11px] text-slate-400">#skills</span>
+        </button>
+        <button type="button" data-action="goto:#projects" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="folder-code" class="w-4 h-4 text-emerald-500"></i> Jump to Projects</span>
+          <span class="font-mono text-[11px] text-slate-400">#projects</span>
+        </button>
+        <button type="button" data-action="theme" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="sun-moon" class="w-4 h-4 text-amber-500"></i> Toggle Light / Dark Theme</span>
+          <span class="font-mono text-[11px] text-slate-400">theme</span>
+        </button>
+        <button type="button" data-action="copy-email" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="copy" class="w-4 h-4 text-violet-500"></i> Copy Email Address</span>
+          <span class="font-mono text-[11px] text-slate-400">copy</span>
+        </button>
+        <button type="button" data-action="party" class="cmd-item w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-500/10 flex items-center justify-between text-slate-700 dark:text-slate-200">
+          <span class="flex items-center gap-2.5"><i data-lucide="party-popper" class="w-4 h-4 text-pink-500"></i> Launch Confetti</span>
+          <span class="font-mono text-[11px] text-slate-400">fun</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-16 opacity-0 pointer-events-none transition-all duration-200 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium shadow-lg">
-    Copied ikraranugrah26@gmail.com to clipboard
+  <div id="toast" class="fixed bottom-5 right-5 z-50 translate-y-16 opacity-0 pointer-events-none transition-all duration-200 px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-medium shadow-xl border border-slate-700 dark:border-slate-200">
+    Copied ikraranugrah26@gmail.com to clipboard!
   </div>
 
   <script>
     const SKILLS = [
-      { name: 'Laravel', category: 'backend', level: 'Primary' },
-      { name: 'CodeIgniter 4', category: 'backend', level: 'Experienced' },
-      { name: 'PHP', category: 'backend', level: 'Primary' },
-      { name: 'RESTful APIs', category: 'backend', level: 'Primary' },
-      { name: 'Java', category: 'backend', level: 'Working' },
-      { name: 'JavaScript', category: 'frontend', level: 'Primary' },
-      { name: 'Vue.js', category: 'frontend', level: 'Experienced' },
-      { name: 'HTML5 & CSS3', category: 'frontend', level: 'Primary' },
-      { name: 'Tailwind CSS', category: 'frontend', level: 'Experienced' },
-      { name: 'MySQL', category: 'database', level: 'Primary' },
-      { name: 'PostgreSQL', category: 'database', level: 'Experienced' },
-      { name: 'Oracle SQL', category: 'database', level: 'Working' },
-      { name: 'Git & GitHub', category: 'devops', level: 'Primary' },
-      { name: 'GitLab CI/CD', category: 'devops', level: 'Experienced' },
-      { name: 'Docker & Linux', category: 'devops', level: 'Experienced' },
-      { name: 'Postman', category: 'devops', level: 'Primary' },
+      { name: 'Laravel', category: 'backend', level: 'Primary', pct: 95 },
+      { name: 'CodeIgniter 4', category: 'backend', level: 'Experienced', pct: 85 },
+      { name: 'PHP', category: 'backend', level: 'Primary', pct: 95 },
+      { name: 'RESTful APIs', category: 'backend', level: 'Primary', pct: 92 },
+      { name: 'Java', category: 'backend', level: 'Working', pct: 72 },
+      { name: 'JavaScript', category: 'frontend', level: 'Primary', pct: 88 },
+      { name: 'Vue.js', category: 'frontend', level: 'Experienced', pct: 82 },
+      { name: 'HTML5 & CSS3', category: 'frontend', level: 'Primary', pct: 92 },
+      { name: 'Tailwind CSS', category: 'frontend', level: 'Experienced', pct: 85 },
+      { name: 'MySQL', category: 'database', level: 'Primary', pct: 92 },
+      { name: 'PostgreSQL', category: 'database', level: 'Experienced', pct: 86 },
+      { name: 'Oracle SQL', category: 'database', level: 'Working', pct: 78 },
+      { name: 'Git & GitHub', category: 'devops', level: 'Primary', pct: 92 },
+      { name: 'GitLab CI/CD', category: 'devops', level: 'Experienced', pct: 84 },
+      { name: 'Docker & Linux', category: 'devops', level: 'Experienced', pct: 84 },
+      { name: 'Postman', category: 'devops', level: 'Primary', pct: 90 },
     ];
+
+    const CATEGORY_COLORS = {
+      backend: 'from-indigo-500 to-violet-500',
+      frontend: 'from-cyan-400 to-blue-500',
+      database: 'from-emerald-400 to-teal-500',
+      devops: 'from-amber-400 to-orange-500',
+    };
 
     const PROJECTS = [
       {
         id: 'billing-systems',
         tag: 'Enterprise Backend',
+        accent: 'from-indigo-500/20 via-violet-500/10 to-cyan-500/20',
+        icon: 'layers',
+        diagram: 'API Gateway → Billing Core → VA Reconciliation',
         title: 'Billing & Payment Integration Systems',
         summary: 'Backend services, virtual account workflows, and CI/CD pipelines for large-scale enterprise billing platforms.',
         highlights: [
@@ -258,6 +520,9 @@
       {
         id: 'internal-web-apps',
         tag: 'Full-Stack Web',
+        accent: 'from-cyan-500/20 via-blue-500/10 to-indigo-500/20',
+        icon: 'layout-dashboard',
+        diagram: 'Vue / JS Client ↔ Laravel REST ↔ MySQL',
         title: 'Internal Web Modules & API Suite',
         summary: 'Custom internal web modules and REST APIs built to streamline operations and reporting.',
         highlights: [
@@ -270,6 +535,9 @@
       {
         id: 'db-migration',
         tag: 'Database Engineering',
+        accent: 'from-emerald-500/20 via-teal-500/10 to-cyan-500/20',
+        icon: 'database',
+        diagram: 'Oracle PL/SQL ⟹ Schema Map ⟹ PostgreSQL',
         title: 'Relational Database Schema & Procedure Migration',
         summary: 'Cross-engine database migration work porting legacy stored procedures and schemas to PostgreSQL.',
         highlights: [
@@ -282,6 +550,9 @@
       {
         id: 'game-servers',
         tag: 'Self-Hosted Infrastructure',
+        accent: 'from-amber-500/20 via-orange-500/10 to-rose-500/20',
+        icon: 'server',
+        diagram: 'Linux Host → Docker Containers → Game Panel',
         title: 'Containerized Linux Game Server Stack',
         summary: 'Personal side project managing dedicated game servers with Docker containers and automated panels.',
         highlights: [
@@ -293,7 +564,14 @@
       }
     ];
 
-    // Theme initialization
+    const VIBE_TEXT = {
+      gaming: 'Unwinding on Steam & PlayStation — always up for tactical shooters, co-op chaos, or story-driven games.',
+      linux: 'Spinning up Dockerized dedicated game servers, tuning Linux configs, and automating backups with Bash.',
+      keyboards: 'Big fan of tactile mechanical keyboards, clean desk setups, and tinkering with tech peripherals.',
+      coffee: 'Exploring local coffee spots (warkops to cafes) and hunting down the best spicy fried rice around Bandung.'
+    };
+
+    // Theme initialization (Dark-first)
     const root = document.documentElement;
     function applyTheme(dark) {
       root.classList.toggle('dark', dark);
@@ -301,7 +579,9 @@
     }
     try {
       const saved = localStorage.getItem('theme');
-      if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      if (saved === 'light') {
+        applyTheme(false);
+      } else {
         applyTheme(true);
       }
     } catch (e) {}
@@ -319,6 +599,137 @@
       link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
     });
 
+    // Scroll Progress Bar
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+      progressBar.style.width = pct + '%';
+    }, { passive: true });
+
+    // Role Typewriter
+    const ROLES = [
+      'Full-Stack Developer',
+      'REST API & Backend Builder',
+      'SQL & Database Migrator',
+      'Linux Server Tinkerer'
+    ];
+    let roleIdx = 0;
+    let charIdx = ROLES[0].length;
+    let deleting = false;
+    const roleEl = document.getElementById('role-rotator');
+    function tickRole() {
+      const current = ROLES[roleIdx];
+      if (!deleting) {
+        charIdx++;
+        roleEl.textContent = current.slice(0, charIdx);
+        if (charIdx === current.length) {
+          deleting = true;
+          setTimeout(tickRole, 2000);
+          return;
+        }
+      } else {
+        charIdx--;
+        roleEl.textContent = current.slice(0, charIdx);
+        if (charIdx === 0) {
+          deleting = false;
+          roleIdx = (roleIdx + 1) % ROLES.length;
+        }
+      }
+      setTimeout(tickRole, deleting ? 35 : 65);
+    }
+    setTimeout(() => { deleting = true; tickRole(); }, 2200);
+
+    // Live Bandung Clock (WIB / UTC+7)
+    function updateClock() {
+      const now = new Date();
+      try {
+        const timeStr = new Intl.DateTimeFormat('en-GB', {
+          timeZone: 'Asia/Jakarta',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }).format(now);
+        const hour = parseInt(timeStr.split(':')[0], 10);
+        document.getElementById('live-clock').textContent = timeStr;
+        const status = hour >= 9 && hour < 18
+          ? 'WIB (UTC+7) · Probably shipping code'
+          : hour >= 18 && hour < 23
+            ? 'WIB (UTC+7) · Evening gaming or tinkering'
+            : 'WIB (UTC+7) · Recharging for tomorrow';
+        document.getElementById('live-status').textContent = status;
+      } catch (e) {
+        document.getElementById('live-clock').textContent = now.toTimeString().slice(0, 8);
+      }
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Interactive Terminal
+    const termOutput = document.getElementById('term-output');
+    const termInput = document.getElementById('term-input');
+    function runTerminalCmd(raw) {
+      const cmd = raw.trim().toLowerCase();
+      if (!cmd) return;
+      const cmdLine = document.createElement('div');
+      cmdLine.innerHTML = `<span class="text-emerald-400">ikrar@bandung</span>:<span class="text-indigo-400">~</span>$ ${cmd.replace(/</g, '&lt;')}`;
+      termOutput.appendChild(cmdLine);
+
+      const res = document.createElement('div');
+      res.className = 'text-slate-300 pl-2 border-l-2 border-cyan-500/40';
+      if (cmd === 'help') {
+        res.innerHTML = 'Available commands: <span class="text-cyan-300">whoami</span>, <span class="text-cyan-300">skills</span>, <span class="text-cyan-300">projects</span>, <span class="text-cyan-300">hobbies</span>, <span class="text-cyan-300">coffee</span>, <span class="text-cyan-300">theme</span>, <span class="text-cyan-300">clear</span>';
+      } else if (cmd === 'whoami') {
+        res.textContent = 'Ikrar Anugrah Bastary — Full-Stack Developer based in Bandung, ID.';
+      } else if (cmd === 'skills') {
+        res.textContent = 'Laravel · CodeIgniter · PHP · JavaScript · Vue.js · MySQL · PostgreSQL · Docker · Git';
+      } else if (cmd === 'projects') {
+        res.innerHTML = '4 highlighted builds ready — scrolling to <span class="text-cyan-300">#projects</span>...';
+        setTimeout(() => document.getElementById('projects').scrollIntoView({ behavior: 'smooth' }), 250);
+      } else if (cmd === 'hobbies') {
+        res.textContent = 'PC & console gaming, self-hosted Linux servers, mechanical keyboards, and Bandung food spots.';
+      } else if (cmd === 'coffee') {
+        res.innerHTML = 'Brewing virtual kopi susu... <span class="text-emerald-400">Done! +10 coding speed.</span>';
+        if (window.confetti) confetti({ particleCount: 35, spread: 55, origin: { y: 0.65 } });
+      } else if (cmd === 'theme') {
+        applyTheme(!root.classList.contains('dark'));
+        res.textContent = `Switched to ${root.classList.contains('dark') ? 'dark' : 'light'} mode.`;
+      } else if (cmd === 'clear') {
+        termOutput.innerHTML = '<div class="text-slate-400">Terminal cleared. Type <span class="text-cyan-300">help</span> for commands.</div>';
+        return;
+      } else {
+        res.innerHTML = `Command not found: <span class="text-rose-400">${cmd.replace(/</g, '&lt;')}</span>. Try <span class="text-cyan-300">help</span>.`;
+      }
+      termOutput.appendChild(res);
+      termOutput.scrollTop = termOutput.scrollHeight;
+    }
+
+    document.getElementById('term-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      runTerminalCmd(termInput.value);
+      termInput.value = '';
+    });
+    document.querySelectorAll('.term-chip').forEach((chip) => {
+      chip.addEventListener('click', () => runTerminalCmd(chip.dataset.cmd));
+    });
+    document.getElementById('term-clear-btn').addEventListener('click', () => runTerminalCmd('clear'));
+
+    // Off-the-clock interactive vibe pills
+    document.getElementById('vibe-pills').addEventListener('click', (e) => {
+      const pill = e.target.closest('.vibe-pill');
+      if (!pill) return;
+      const key = pill.dataset.vibe;
+      document.getElementById('vibe-caption').textContent = VIBE_TEXT[key] || '';
+      document.querySelectorAll('.vibe-pill').forEach((p) => {
+        const active = p === pill;
+        p.className = active
+          ? 'vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white border border-indigo-500 shadow-sm transition-all'
+          : 'vibe-pill px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800/90 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-indigo-400 transition-all';
+      });
+    });
+
     // Skills rendering & filter
     let activeSkillFilter = 'all';
     const skillsGrid = document.getElementById('skills-grid');
@@ -326,12 +737,22 @@
       const list = activeSkillFilter === 'all'
         ? SKILLS
         : SKILLS.filter((s) => s.category === activeSkillFilter);
-      skillsGrid.innerHTML = list.map((skill) => `
-        <div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
-          <span class="font-medium text-sm text-slate-800 dark:text-slate-100">${skill.name}</span>
-          <span class="text-[11px] font-medium px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${skill.level}</span>
-        </div>
-      `).join('');
+      document.getElementById('skill-count-badge').textContent = `${list.length} tool${list.length === 1 ? '' : 's'}`;
+      skillsGrid.innerHTML = list.map((skill) => {
+        const grad = CATEGORY_COLORS[skill.category] || 'from-indigo-500 to-cyan-500';
+        return `
+          <div class="spotlight-card glass-card p-4 rounded-2xl bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="font-semibold text-sm text-slate-900 dark:text-white">${skill.name}</span>
+              <span class="font-mono text-[10px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${skill.level}</span>
+            </div>
+            <div class="h-1.5 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r ${grad}" style="width: ${skill.pct}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      bindSpotlights();
     }
 
     document.getElementById('skill-filters').addEventListener('click', (e) => {
@@ -341,8 +762,8 @@
       document.querySelectorAll('.skill-filter-btn').forEach((b) => {
         const isActive = b.dataset.filter === activeSkillFilter;
         b.className = isActive
-          ? 'skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-colors'
-          : 'skill-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-colors';
+          ? 'skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white shadow-sm transition-all'
+          : 'skill-filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 transition-all';
       });
       renderSkills();
     });
@@ -350,55 +771,70 @@
     // Projects rendering & modal
     const projectsGrid = document.getElementById('projects-grid');
     const modal = document.getElementById('project-modal');
-    function renderProjects() {
-      projectsGrid.innerHTML = PROJECTS.map((p) => `
-        <article class="group p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all flex flex-col justify-between gap-4">
-          <div class="space-y-2.5">
-            <span class="text-xs font-semibold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">${p.tag}</span>
-            <h3 class="text-lg font-bold text-slate-900 dark:text-white">${p.title}</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${p.summary}</p>
-          </div>
-          <div class="space-y-4">
-            <div class="flex flex-wrap gap-1.5">
-              ${p.stack.map((t) => `<span class="px-2.5 py-0.5 rounded-md text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${t}</span>`).join('')}
-            </div>
-            <button type="button" data-project-id="${p.id}"
-              class="open-project-btn inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
-              View details <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </article>
-      `).join('');
-      if (window.lucide) lucide.createIcons();
-    }
-
-    projectsGrid.addEventListener('click', (e) => {
-      const btn = e.target.closest('.open-project-btn');
-      if (!btn) return;
-      const proj = PROJECTS.find((p) => p.id === btn.dataset.projectId);
+    function openProjectModal(projectId) {
+      const proj = PROJECTS.find((p) => p.id === projectId);
       if (!proj) return;
       document.getElementById('modal-tag').textContent = proj.tag;
       document.getElementById('modal-title').textContent = proj.title;
       document.getElementById('modal-desc').textContent = proj.summary;
       document.getElementById('modal-highlights').innerHTML = proj.highlights.map((h) => `<li>${h}</li>`).join('');
       document.getElementById('modal-stack').innerHTML = proj.stack
-        .map((t) => `<span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300">${t}</span>`)
+        .map((t) => `<span class="px-2.5 py-1 rounded-lg font-mono text-xs font-medium bg-indigo-500/10 text-indigo-700 dark:text-cyan-300 border border-indigo-500/20">${t}</span>`)
         .join('');
       modal.classList.remove('hidden');
+    }
+
+    function renderProjects() {
+      projectsGrid.innerHTML = PROJECTS.map((p) => `
+        <article data-project-id="${p.id}"
+          class="project-card spotlight-card glass-card cursor-pointer rounded-3xl bg-white/85 dark:bg-slate-900/75 border border-slate-200/90 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-cyan-400/60 overflow-hidden flex flex-col justify-between">
+          <div>
+            <!-- Visual Architecture Header -->
+            <div class="px-5 py-4 bg-gradient-to-r ${p.accent} border-b border-slate-200/70 dark:border-slate-800/80 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2 font-mono text-[11px] text-slate-700 dark:text-slate-200 truncate">
+                <i data-lucide="${p.icon}" class="w-4 h-4 shrink-0 text-indigo-600 dark:text-cyan-300"></i>
+                <span class="truncate">${p.diagram}</span>
+              </div>
+              <span class="font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/70 dark:bg-slate-950/60 text-slate-700 dark:text-slate-300 shrink-0">${p.tag}</span>
+            </div>
+
+            <div class="p-6 space-y-2.5">
+              <h3 class="text-lg sm:text-xl font-display font-bold text-slate-900 dark:text-white">${p.title}</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">${p.summary}</p>
+            </div>
+          </div>
+
+          <div class="px-6 pb-6 space-y-4">
+            <div class="flex flex-wrap gap-1.5">
+              ${p.stack.map((t) => `<span class="px-2.5 py-0.5 rounded-md font-mono text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${t}</span>`).join('')}
+            </div>
+            <button type="button" data-project-id="${p.id}"
+              class="open-project-btn inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 dark:text-cyan-400 hover:underline">
+              Inspect build <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </article>
+      `).join('');
+      if (window.lucide) lucide.createIcons();
+      bindSpotlights();
+    }
+
+    projectsGrid.addEventListener('click', (e) => {
+      const card = e.target.closest('[data-project-id]');
+      if (!card) return;
+      openProjectModal(card.dataset.projectId);
     });
 
     document.getElementById('close-modal-btn').addEventListener('click', () => modal.classList.add('hidden'));
     modal.addEventListener('click', (e) => {
       if (e.target === modal) modal.classList.add('hidden');
     });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') modal.classList.add('hidden');
-    });
 
-    // Copy email with fallback
+    // Copy email with fallback + confetti
     const toast = document.getElementById('toast');
     let toastTimer = null;
-    function showToast() {
+    function showToast(msg) {
+      if (msg) toast.textContent = msg;
       toast.classList.remove('translate-y-16', 'opacity-0');
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
@@ -406,11 +842,12 @@
       }, 2400);
     }
 
-    document.getElementById('copy-email-btn').addEventListener('click', () => {
+    function copyEmail() {
       const email = 'ikraranugrah26@gmail.com';
       const done = () => {
         document.getElementById('copy-email-label').textContent = 'Copied!';
-        showToast();
+        showToast('Copied ikraranugrah26@gmail.com to clipboard!');
+        if (window.confetti) confetti({ particleCount: 45, spread: 60, origin: { y: 0.7 } });
         setTimeout(() => {
           document.getElementById('copy-email-label').textContent = 'Copy Email';
         }, 2000);
@@ -434,10 +871,135 @@
         document.body.removeChild(ta);
         done();
       }
+    }
+    document.getElementById('copy-email-btn').addEventListener('click', copyEmail);
+
+    // Quick Command Palette
+    const cmdModal = document.getElementById('cmd-modal');
+    function openCmd() { cmdModal.classList.remove('hidden'); }
+    function closeCmd() { cmdModal.classList.add('hidden'); }
+    document.getElementById('cmd-palette-btn').addEventListener('click', openCmd);
+    document.getElementById('close-cmd-btn').addEventListener('click', closeCmd);
+    cmdModal.addEventListener('click', (e) => { if (e.target === cmdModal) closeCmd(); });
+    document.getElementById('cmd-list').addEventListener('click', (e) => {
+      const item = e.target.closest('.cmd-item');
+      if (!item) return;
+      const act = item.dataset.action;
+      closeCmd();
+      if (act.startsWith('goto:')) {
+        const target = document.querySelector(act.slice(5));
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      } else if (act === 'theme') {
+        applyTheme(!root.classList.contains('dark'));
+      } else if (act === 'copy-email') {
+        copyEmail();
+      } else if (act === 'party') {
+        if (window.confetti) confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+        showToast('Confetti deployed!');
+      }
     });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modal.classList.add('hidden');
+        closeCmd();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        cmdModal.classList.contains('hidden') ? openCmd() : closeCmd();
+      }
+    });
+
+    // Mouse Spotlight Binding
+    function bindSpotlights() {
+      document.querySelectorAll('.spotlight-card').forEach((card) => {
+        if (card.dataset.spotBound) return;
+        card.dataset.spotBound = '1';
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
+          card.style.setProperty('--my', `${e.clientY - rect.top}px`);
+        });
+      });
+    }
+
+    // Scroll Reveal Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+
+    // Lightweight Interactive Constellation Canvas
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let nodes = [];
+    const mouse = { x: -999, y: -999 };
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const count = Math.min(48, Math.floor((canvas.width * canvas.height) / 28000));
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.6 + 0.9,
+      }));
+    }
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+    resizeCanvas();
+
+    function drawNodes() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = root.classList.contains('dark');
+      const dotColor = isDark ? 'rgba(99, 102, 241, 0.55)' : 'rgba(79, 70, 229, 0.35)';
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fillStyle = dotColor;
+        ctx.fill();
+
+        for (let j = i + 1; j < nodes.length; j++) {
+          const m = nodes[j];
+          const d = Math.hypot(n.x - m.x, n.y - m.y);
+          if (d < 130) {
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(m.x, m.y);
+            ctx.strokeStyle = isDark
+              ? `rgba(34, 211, 238, ${(1 - d / 130) * 0.16})`
+              : `rgba(99, 102, 241, ${(1 - d / 130) * 0.14})`;
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+          }
+        }
+        const dm = Math.hypot(n.x - mouse.x, n.y - mouse.y);
+        if (dm < 150) {
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = isDark
+            ? `rgba(129, 140, 248, ${(1 - dm / 150) * 0.32})`
+            : `rgba(79, 70, 229, ${(1 - dm / 150) * 0.25})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+      requestAnimationFrame(drawNodes);
+    }
+    requestAnimationFrame(drawNodes);
 
     renderSkills();
     renderProjects();
+    bindSpotlights();
     if (window.lucide) lucide.createIcons();
   </script>
 </body>
